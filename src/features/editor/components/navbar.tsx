@@ -18,8 +18,16 @@ import { Separator } from "@/components/ui/separator";
 import { Hint } from "@/components/hint";
 import { cn } from "@/lib/utils";
 import { BsCloudCheck } from "react-icons/bs";
+import { ActiveTool } from "../types";
 
-const EditorNavbar = () => {
+interface INavbarProps {
+	// id: string;
+	// editor: Editor | undefined;
+	activeTool: ActiveTool;
+	onChangeActiveTool: (tool: ActiveTool) => void;
+}
+
+const EditorNavbar = ({ activeTool, onChangeActiveTool }: INavbarProps) => {
 	const openFilePicker = () => {
 		console.log("Open file picker");
 	};
@@ -55,8 +63,8 @@ const EditorNavbar = () => {
 					<Button
 						variant="ghost"
 						size="icon"
-						onClick={() => {}}
-						className={""}
+						onClick={() => onChangeActiveTool("select")}
+						className={cn(activeTool === "select" && "bg-gray-100")}
 					>
 						<MousePointerClick className="size-4" />
 					</Button>

@@ -1,17 +1,41 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useEditor } from "../hooks/useEditor";
 import { fabric } from "fabric";
 import EditorNavbar from "./navbar";
 import EditorSidebar from "./sidebar";
 import Toolbar from "./toolbar";
 import Footer from "./footer";
+import { ActiveTool } from "../types";
 
 const Editor = () => {
 	const { init } = useEditor();
 	const canvasRef = useRef(null);
 	const containerRef = useRef<HTMLDivElement>(null);
+	const [activeTool, setActiveTool] = useState<ActiveTool>("select");
+
+	const onChangeActiveTool = useCallback(
+		(tool: ActiveTool) => {
+			if (tool === "draw") {
+				// editor?.enableDrawingMode();
+			}
+
+			if (activeTool === "draw") {
+				// editor?.disableDrawingMode();
+			}
+
+			if (tool === activeTool) {
+				return setActiveTool("select");
+			}
+
+			setActiveTool(tool);
+		},
+		[
+			activeTool,
+			// editor
+		]
+	);
 
 	useEffect(() => {
 		const canvas = new fabric.Canvas(canvasRef.current, {
@@ -31,10 +55,16 @@ const Editor = () => {
 
 	return (
 		<div className="h-full flex flex-col">
-			<EditorNavbar />
+			<EditorNavbar
+				activeTool={activeTool}
+				onChangeActiveTool={onChangeActiveTool}
+			/>
 			{/* offset nav */}
 			<div className="absolute h-[calc(100%-68px)] w-full top-[68px] flex">
-				<EditorSidebar />
+				<EditorSidebar
+					activeTool={activeTool}
+					onChangeActiveTool={onChangeActiveTool}
+				/>
 				<main className="bg-muted flex-col flex-1 flex overflow-auto relative">
 					<Toolbar />
 					<div
