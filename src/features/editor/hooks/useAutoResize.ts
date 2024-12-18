@@ -52,7 +52,7 @@ export const useAutoResize = ({ canvas, container }: IAutoResize) => {
 
 		canvas.setViewportTransform(viewportTransform);
 
-		localWorkspace.clone((cloned) => {
+		localWorkspace.clone((cloned: any) => {
 			canvas.clipPath = cloned;
 			canvas.requestRenderAll();
 		});
