@@ -8,6 +8,7 @@ import EditorSidebar from "./sidebar";
 import Toolbar from "./toolbar";
 import Footer from "./footer";
 import { ActiveTool } from "../types";
+import { ShapeSidebar } from "./shape-sidebar";
 
 const Editor = () => {
 	const { init } = useEditor();
@@ -62,6 +63,10 @@ const Editor = () => {
 			{/* offset nav */}
 			<div className="absolute h-[calc(100%-68px)] w-full top-[68px] flex">
 				<EditorSidebar
+					activeTool={activeTool}
+					onChangeActiveTool={onChangeActiveTool}
+				/>
+				<ShapeSidebar
 					activeTool={activeTool}
 					onChangeActiveTool={onChangeActiveTool}
 				/>
