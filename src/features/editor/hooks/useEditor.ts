@@ -13,6 +13,7 @@ import {
 	STROKE_WIDTH,
 	TRIANGLE_OPTIONS,
 } from "../types";
+import { useCanvasEvents } from "./useCanvasEvents";
 
 const buildEditor = ({
 	canvas,
@@ -20,6 +21,8 @@ const buildEditor = ({
 	strokeColor,
 	strokeWidth,
 	strokeDashArray,
+	selectedObjects,
+	setFillColor,
 }: BuildEditorProps) => {
 	const getWorkspace = () => {
 		return canvas.getObjects().find((object) => object.name === "clip");
@@ -42,6 +45,36 @@ const buildEditor = ({
 	};
 
 	return {
+		getActiveFillColor: () => {
+			const selectedObject = selectedObjects[0];
+
+			if (!selectedObject) {
+				return fillColor;
+			}
+
+			const value = selectedObject.get("fill") || fillColor;
+
+			// Currently, gradients & patterns are not supported
+			return value as string;
+		},
+		getActiveStrokeColor: () => {
+			const selectedObject = selectedObjects[0];
+
+			if (!selectedObject) {
+				return strokeColor;
+			}
+
+			const value = selectedObject.get("stroke") || strokeColor;
+
+			return value;
+		},
+		changeFillColor: (value: string) => {
+			setFillColor(value);
+			canvas.getActiveObjects().forEach((object) => {
+				object.set({ fill: value });
+			});
+			canvas.renderAll();
+		},
 		addCircle: () => {
 			console.log("Adding a circle");
 			const object = new fabric.Circle({
@@ -133,7 +166,11 @@ const buildEditor = ({
 			);
 			addToCanvas(object);
 		},
+		fillColor,
+		strokeColor,
+		strokeWidth,
 		canvas,
+		selectedObjects,
 	};
 };
 
@@ -153,23 +190,33 @@ export const useEditor = () => {
 		container,
 	});
 
+	useCanvasEvents({
+		canvas,
+		setSelectedObjects,
+		// container,
+		// setSelectedObjects,
+	});
+
 	const editor = useMemo(() => {
 		if (canvas)
 			return buildEditor({
 				canvas,
 				fillColor,
 				strokeColor,
+				setFillColor,
+				setStrokeColor,
 				strokeWidth,
 				strokeDashArray,
 				fontFamily,
+				selectedObjects,
 			});
 		return undefined;
 	}, [
 		canvas,
+		selectedObjects,
 		fillColor,
 		strokeWidth,
 		strokeColor,
-		// selectedObjects,
 		strokeDashArray,
 		fontFamily,
 	]);
