@@ -26,6 +26,8 @@ const buildEditor = ({
 	selectedObjects,
 	setFillColor,
 	setStrokeColor,
+	setStrokeWidth,
+	setStrokeDashArray,
 }: BuildEditorProps) => {
 	const getWorkspace = () => {
 		return canvas.getObjects().find((object) => object.name === "clip");
@@ -48,9 +50,6 @@ const buildEditor = ({
 	};
 
 	return {
-		// fillColor,
-		// strokeColor,
-		strokeWidth,
 		getActiveFillColor: () => {
 			const selectedObject = selectedObjects[0];
 
@@ -74,6 +73,29 @@ const buildEditor = ({
 
 			return value;
 		},
+		getActiveStrokeWidth: () => {
+			const selectedObject = selectedObjects[0];
+
+			if (!selectedObject) {
+				return strokeWidth;
+			}
+
+			const value = selectedObject.get("strokeWidth") || strokeWidth;
+
+			return value;
+		},
+		getActiveStrokeDashArray: () => {
+			const selectedObject = selectedObjects[0];
+
+			if (!selectedObject) {
+				return strokeDashArray;
+			}
+
+			const value =
+				selectedObject.get("strokeDashArray") || strokeDashArray;
+
+			return value;
+		},
 		changeFillColor: (value: string) => {
 			setFillColor(value);
 			canvas.getActiveObjects().forEach((object) => {
@@ -94,6 +116,21 @@ const buildEditor = ({
 				object.set({ stroke: value });
 			});
 			canvas.freeDrawingBrush.color = value;
+			canvas.renderAll();
+		},
+		changeStrokeWidth: (value: number) => {
+			setStrokeWidth(value);
+			canvas.getActiveObjects().forEach((object) => {
+				object.set({ strokeWidth: value });
+			});
+			canvas.freeDrawingBrush.width = value;
+			canvas.renderAll();
+		},
+		changeStrokeDashArray: (value: number[]) => {
+			setStrokeDashArray(value);
+			canvas.getActiveObjects().forEach((object) => {
+				object.set({ strokeDashArray: value });
+			});
 			canvas.renderAll();
 		},
 		addCircle: () => {
@@ -223,6 +260,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 				strokeColor,
 				setFillColor,
 				setStrokeColor,
+				setStrokeWidth,
+				setStrokeDashArray,
 				strokeWidth,
 				strokeDashArray,
 				fontFamily,
