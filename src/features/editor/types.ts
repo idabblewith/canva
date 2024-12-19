@@ -62,7 +62,7 @@ export interface Editor {
 	// sendBackwards: () => void;
 	// changeStrokeWidth: (value: number) => void;
 	changeFillColor: (value: string) => void;
-	// changeStrokeColor: (value: string) => void;
+	changeStrokeColor: (value: string) => void;
 	// changeStrokeDashArray: (value: number[]) => void;
 	addCircle: () => void;
 	addSoftRectangle: () => void;
@@ -172,3 +172,25 @@ export const colors = [
 	material.blueGrey["500"],
 	"transparent",
 ];
+
+export const selectionDependentTools = [
+	"fill",
+	"font",
+	"filter",
+	"opacity",
+	"remove-bg",
+	"stroke-color",
+	"stroke-width",
+];
+
+export interface EditorHookProps {
+	defaultState?: string;
+	defaultWidth?: number;
+	defaultHeight?: number;
+	clearSelectionCallback?: () => void;
+	saveCallback?: (values: {
+		json: string;
+		height: number;
+		width: number;
+	}) => void;
+}

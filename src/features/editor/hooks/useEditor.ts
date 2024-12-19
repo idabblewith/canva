@@ -12,8 +12,10 @@ import {
 	STROKE_DASH_ARRAY,
 	STROKE_WIDTH,
 	TRIANGLE_OPTIONS,
+	EditorHookProps,
 } from "../types";
 import { useCanvasEvents } from "./useCanvasEvents";
+import { isTextType } from "../utils";
 
 const buildEditor = ({
 	canvas,
@@ -23,6 +25,7 @@ const buildEditor = ({
 	strokeDashArray,
 	selectedObjects,
 	setFillColor,
+	setStrokeColor,
 }: BuildEditorProps) => {
 	const getWorkspace = () => {
 		return canvas.getObjects().find((object) => object.name === "clip");
@@ -45,6 +48,9 @@ const buildEditor = ({
 	};
 
 	return {
+		// fillColor,
+		// strokeColor,
+		strokeWidth,
 		getActiveFillColor: () => {
 			const selectedObject = selectedObjects[0];
 
@@ -73,6 +79,21 @@ const buildEditor = ({
 			canvas.getActiveObjects().forEach((object) => {
 				object.set({ fill: value });
 			});
+			canvas.renderAll();
+		},
+
+		changeStrokeColor: (value: string) => {
+			setStrokeColor(value);
+			canvas.getActiveObjects().forEach((object) => {
+				// Text types don't have stroke
+				if (isTextType(object.type)) {
+					object.set({ fill: value });
+					return;
+				}
+
+				object.set({ stroke: value });
+			});
+			canvas.freeDrawingBrush.color = value;
 			canvas.renderAll();
 		},
 		addCircle: () => {
@@ -166,15 +187,12 @@ const buildEditor = ({
 			);
 			addToCanvas(object);
 		},
-		fillColor,
-		strokeColor,
-		strokeWidth,
 		canvas,
 		selectedObjects,
 	};
 };
 
-export const useEditor = () => {
+export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [container, setContainer] = useState<HTMLDivElement | null>(null);
 	const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);
@@ -193,8 +211,8 @@ export const useEditor = () => {
 	useCanvasEvents({
 		canvas,
 		setSelectedObjects,
+		clearSelectionCallback,
 		// container,
-		// setSelectedObjects,
 	});
 
 	const editor = useMemo(() => {

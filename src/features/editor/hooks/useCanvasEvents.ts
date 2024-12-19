@@ -12,8 +12,8 @@ export const useCanvasEvents = ({
 	// save,
 	canvas,
 	setSelectedObjects,
-}: // clearSelectionCallback,
-UseCanvasEventsProps) => {
+	clearSelectionCallback,
+}: UseCanvasEventsProps) => {
 	const save = () => {
 		console.log("Saving...");
 	};
@@ -30,7 +30,7 @@ UseCanvasEventsProps) => {
 			});
 			canvas.on("selection:cleared", () => {
 				setSelectedObjects([]);
-				// clearSelectionCallback?.();
+				clearSelectionCallback?.();
 			});
 		}
 
@@ -47,7 +47,7 @@ UseCanvasEventsProps) => {
 	}, [
 		save,
 		canvas,
-		// clearSelectionCallback,
+		clearSelectionCallback,
 		setSelectedObjects, // No need for this, this is from setState
 	]);
 };

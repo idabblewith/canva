@@ -7,14 +7,12 @@ import EditorNavbar from "./navbar";
 import EditorSidebar from "./sidebar";
 import Toolbar from "./toolbar";
 import Footer from "./footer";
-import { ActiveTool } from "../types";
+import { ActiveTool, selectionDependentTools } from "../types";
 import { ShapeSidebar } from "./shape-sidebar";
 import { FillColorSidebar } from "./fill-color-sidebar";
+import { StrokeColorSidebar } from "./stroke-color-sidebar";
 
 const Editor = () => {
-	const { init, editor } = useEditor();
-	const canvasRef = useRef(null);
-	const containerRef = useRef<HTMLDivElement>(null);
 	const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
 	const onChangeActiveTool = useCallback(
@@ -38,6 +36,19 @@ const Editor = () => {
 			// editor
 		]
 	);
+
+	const onClearSelection = useCallback(() => {
+		if (selectionDependentTools.includes(activeTool)) {
+			setActiveTool("select");
+		}
+		// editor?.clearSelection();
+	}, [activeTool]);
+
+	const { init, editor } = useEditor({
+		clearSelectionCallback: onClearSelection,
+	});
+	const canvasRef = useRef(null);
+	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const canvas = new fabric.Canvas(canvasRef.current, {
@@ -73,6 +84,11 @@ const Editor = () => {
 					onChangeActiveTool={onChangeActiveTool}
 				/>
 				<FillColorSidebar
+					editor={editor}
+					activeTool={activeTool}
+					onChangeActiveTool={onChangeActiveTool}
+				/>
+				<StrokeColorSidebar
 					editor={editor}
 					activeTool={activeTool}
 					onChangeActiveTool={onChangeActiveTool}
