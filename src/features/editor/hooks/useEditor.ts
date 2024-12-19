@@ -224,6 +224,26 @@ const buildEditor = ({
 			);
 			addToCanvas(object);
 		},
+		// Layering
+		bringForward: () => {
+			canvas.getActiveObjects().forEach((object) => {
+				canvas.bringForward(object);
+			});
+
+			canvas.renderAll();
+
+			const workspace = getWorkspace();
+			workspace?.sendToBack();
+		},
+		sendBackwards: () => {
+			canvas.getActiveObjects().forEach((object) => {
+				canvas.sendBackwards(object);
+			});
+
+			canvas.renderAll();
+			const workspace = getWorkspace();
+			workspace?.sendToBack();
+		},
 		canvas,
 		selectedObjects,
 	};
