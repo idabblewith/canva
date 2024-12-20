@@ -1,22 +1,15 @@
 import { ITextboxOptions } from "fabric/fabric-impl";
 import * as material from "material-colors";
 
-export type ActiveTool =
-	| "select"
-	| "shapes"
-	| "text"
-	| "images"
-	| "draw"
-	| "fill"
-	| "stroke-color"
-	| "stroke-width"
-	| "font"
-	| "opacity"
-	| "filter"
-	| "settings"
-	| "ai"
-	| "remove-bg"
-	| "templates";
+// Editor
+
+export const FILL_COLOR = "rgba(0,0,0,1)";
+export const STROKE_COLOR = "rgba(0,0,0,1)";
+export const STROKE_WIDTH = 2;
+export const STROKE_DASH_ARRAY = [];
+export const FONT_FAMILY = "Arial";
+export const FONT_SIZE = 32;
+export const FONT_WEIGHT = 400;
 
 export interface Editor {
 	// savePng: () => void;
@@ -55,7 +48,7 @@ export interface Editor {
 	// getActiveFontWeight: () => number;
 	// getActiveFontFamily: () => string;
 	// changeFontFamily: (value: string) => void;
-	// addText: (value: string, options?: ITextboxOptions) => void;
+	addText: (value: string, options?: ITextboxOptions) => void;
 	changeOpacity: (value: number) => void;
 	bringForward: () => void;
 	sendBackwards: () => void;
@@ -101,14 +94,36 @@ export type BuildEditorProps = {
 	// setFontFamily: (value: string) => void;
 };
 
-export const FILL_COLOR = "rgba(0,0,0,1)";
-export const STROKE_COLOR = "rgba(0,0,0,1)";
-export const STROKE_WIDTH = 2;
-export const STROKE_DASH_ARRAY = [];
-export const FONT_FAMILY = "Arial";
-export const FONT_SIZE = 32;
-export const FONT_WEIGHT = 400;
+// Tools
 
+export type ActiveTool =
+	| "select"
+	| "shapes"
+	| "text"
+	| "images"
+	| "draw"
+	| "fill"
+	| "stroke-color"
+	| "stroke-width"
+	| "font"
+	| "opacity"
+	| "filter"
+	| "settings"
+	| "ai"
+	| "remove-bg"
+	| "templates";
+
+export const selectionDependentTools = [
+	"fill",
+	"font",
+	"filter",
+	"opacity",
+	"remove-bg",
+	"stroke-color",
+	"stroke-width",
+];
+
+// Shapes
 export const CIRCLE_OPTIONS = {
 	radius: 100,
 	left: 100,
@@ -151,6 +166,18 @@ export const TRIANGLE_OPTIONS = {
 	angle: 0,
 };
 
+// Text
+
+export const TEXT_OPTIONS = {
+	type: "textbox",
+	left: 100,
+	top: 100,
+	fill: FILL_COLOR,
+	fontSize: FONT_SIZE,
+	fontFamily: FONT_FAMILY,
+};
+
+// Color Picker
 export const colors = [
 	material.red["500"],
 	material.pink["500"],
@@ -171,16 +198,6 @@ export const colors = [
 	material.brown["500"],
 	material.blueGrey["500"],
 	"transparent",
-];
-
-export const selectionDependentTools = [
-	"fill",
-	"font",
-	"filter",
-	"opacity",
-	"remove-bg",
-	"stroke-color",
-	"stroke-width",
 ];
 
 export interface EditorHookProps {

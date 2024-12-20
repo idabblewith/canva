@@ -13,6 +13,7 @@ import {
 	STROKE_WIDTH,
 	TRIANGLE_OPTIONS,
 	EditorHookProps,
+	TEXT_OPTIONS,
 } from "../types";
 import { useCanvasEvents } from "./useCanvasEvents";
 import { isTextType } from "../utils";
@@ -243,6 +244,16 @@ const buildEditor = ({
 			canvas.renderAll();
 			const workspace = getWorkspace();
 			workspace?.sendToBack();
+		},
+		// Text
+		addText: (value, options) => {
+			const object = new fabric.Textbox(value, {
+				...TEXT_OPTIONS,
+				fill: fillColor,
+				...options,
+			});
+
+			addToCanvas(object);
 		},
 		// Opacity
 		changeOpacity: (value: number) => {
