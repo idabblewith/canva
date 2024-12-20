@@ -15,6 +15,7 @@ import {
 	EditorHookProps,
 	TEXT_OPTIONS,
 	FONT_WEIGHT,
+	FONT_SIZE,
 } from "../types";
 import { useCanvasEvents } from "./useCanvasEvents";
 import { isTextType } from "../utils";
@@ -305,6 +306,30 @@ const buildEditor = ({
 
 			return value;
 		},
+		changeFontSize: (value: number) => {
+			canvas.getActiveObjects().forEach((object) => {
+				if (isTextType(object.type)) {
+					// @ts-ignore
+					// Faulty TS library, fontSize exists.
+					object.set({ fontSize: value });
+				}
+			});
+			canvas.renderAll();
+		},
+		getActiveFontSize: () => {
+			const selectedObject = selectedObjects[0];
+
+			if (!selectedObject) {
+				return FONT_SIZE;
+			}
+
+			// @ts-ignore
+			// Faulty TS library, fontSize exists.
+			const value = selectedObject.get("fontSize") || FONT_SIZE;
+
+			return value;
+		},
+
 		changeTextAlign: (value: string) => {
 			canvas.getActiveObjects().forEach((object) => {
 				if (isTextType(object.type)) {
@@ -416,6 +441,13 @@ const buildEditor = ({
 
 			return value;
 		},
+		delete: () => {
+			canvas
+				.getActiveObjects()
+				.forEach((object) => canvas.remove(object));
+			canvas.discardActiveObject();
+			canvas.renderAll();
+		},
 		canvas,
 		selectedObjects,
 	};
@@ -425,6 +457,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [container, setContainer] = useState<HTMLDivElement | null>(null);
 	const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);
+
 	const [fontFamily, setFontFamily] = useState(FONT_FAMILY);
 	const [fillColor, setFillColor] = useState(FILL_COLOR);
 	const [strokeColor, setStrokeColor] = useState(STROKE_COLOR);

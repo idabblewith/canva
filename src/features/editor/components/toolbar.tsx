@@ -15,6 +15,7 @@ import {
 	ArrowDown,
 	ArrowUp,
 	ChevronDown,
+	Trash,
 } from "lucide-react";
 import {
 	FaBold,
@@ -22,6 +23,7 @@ import {
 	FaStrikethrough,
 	FaUnderline,
 } from "react-icons/fa6";
+import { FontSizeInput } from "./font-size-input";
 interface ToolbarProps {
 	editor: Editor | undefined;
 	activeTool: ActiveTool;
@@ -37,7 +39,7 @@ const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
 	const initialFontLinethrough = editor?.getActiveFontLinethrough();
 	const initialFontUnderline = editor?.getActiveFontUnderline();
 	const initialTextAlign = editor?.getActiveTextAlign();
-	// const initialFontSize = editor?.getActiveFontSize() || FONT_SIZE
+	const initialFontSize = editor?.getActiveFontSize() || FONT_SIZE;
 
 	const [properties, setProperties] = useState({
 		fillColor: initialFillColor,
@@ -48,7 +50,7 @@ const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
 		fontLinethrough: initialFontLinethrough,
 		fontUnderline: initialFontUnderline,
 		textAlign: initialTextAlign,
-		//   fontSize: initialFontSize,
+		fontSize: initialFontSize,
 	});
 
 	const selectedObject = editor?.selectedObjects[0];
@@ -123,6 +125,18 @@ const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
 		setProperties((current) => ({
 			...current,
 			textAlign: value,
+		}));
+	};
+
+	const onChangeFontSize = (value: number) => {
+		if (!selectedObject) {
+			return;
+		}
+
+		editor?.changeFontSize(value);
+		setProperties((current) => ({
+			...current,
+			fontSize: value,
 		}));
 	};
 
@@ -325,6 +339,14 @@ const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
 					</Hint>
 				</div>
 			)}
+			{isText && (
+				<div className="flex items-center h-full justify-center">
+					<FontSizeInput
+						value={properties.fontSize}
+						onChange={onChangeFontSize}
+					/>
+				</div>
+			)}
 			<div className="flex items-center h-full justify-center">
 				<Hint label="Bring forward" side="bottom" sideOffset={5}>
 					<Button
@@ -358,6 +380,17 @@ const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
 						)}
 					>
 						<RxTransparencyGrid className="size-4" />
+					</Button>
+				</Hint>
+			</div>
+			<div className="flex items-center h-full justify-center">
+				<Hint label="Delete" side="bottom" sideOffset={5}>
+					<Button
+						onClick={() => editor?.delete()}
+						size="icon"
+						variant="ghost"
+					>
+						<Trash className="size-4" />
 					</Button>
 				</Hint>
 			</div>
