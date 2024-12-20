@@ -17,9 +17,11 @@ import {
 } from "../types";
 import { useCanvasEvents } from "./useCanvasEvents";
 import { isTextType } from "../utils";
+import { ITextboxOptions } from "fabric/fabric-impl";
 
 const buildEditor = ({
 	canvas,
+	fontFamily,
 	fillColor,
 	strokeColor,
 	strokeWidth,
@@ -29,6 +31,7 @@ const buildEditor = ({
 	setStrokeColor,
 	setStrokeWidth,
 	setStrokeDashArray,
+	setFontFamily,
 }: BuildEditorProps) => {
 	const getWorkspace = () => {
 		return canvas.getObjects().find((object) => object.name === "clip");
@@ -246,7 +249,7 @@ const buildEditor = ({
 			workspace?.sendToBack();
 		},
 		// Text
-		addText: (value, options) => {
+		addText: (value: string, options: ITextboxOptions) => {
 			const object = new fabric.Textbox(value, {
 				...TEXT_OPTIONS,
 				fill: fillColor,
@@ -255,6 +258,30 @@ const buildEditor = ({
 
 			addToCanvas(object);
 		},
+		changeFontFamily: (value: string) => {
+			setFontFamily(value);
+			canvas.getActiveObjects().forEach((object) => {
+				if (isTextType(object.type)) {
+					// @ts-ignore
+					object.set({ fontFamily: value });
+				}
+			});
+			canvas.renderAll();
+		},
+		getActiveFontFamily: () => {
+			const selectedObject = selectedObjects[0];
+
+			if (!selectedObject) {
+				return fontFamily;
+			}
+
+			// @ts-ignore
+			// Faulty TS library, fontFamily exists.
+			const value = selectedObject.get("fontFamily") || fontFamily;
+
+			return value;
+		},
+
 		// Opacity
 		changeOpacity: (value: number) => {
 			canvas.getActiveObjects().forEach((object) => {
@@ -311,6 +338,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 				setStrokeColor,
 				setStrokeWidth,
 				setStrokeDashArray,
+				setFontFamily,
 				strokeWidth,
 				strokeDashArray,
 				fontFamily,

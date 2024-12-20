@@ -46,8 +46,8 @@ export interface Editor {
 	// getActiveFontStyle: () => string;
 	// changeFontWeight: (value: number) => void;
 	// getActiveFontWeight: () => number;
-	// getActiveFontFamily: () => string;
-	// changeFontFamily: (value: string) => void;
+	getActiveFontFamily: () => string;
+	changeFontFamily: (value: string) => void;
 	addText: (value: string, options?: ITextboxOptions) => void;
 	changeOpacity: (value: number) => void;
 	bringForward: () => void;
@@ -91,7 +91,7 @@ export type BuildEditorProps = {
 	setFillColor: (value: string) => void;
 	setStrokeColor: (value: string) => void;
 	setStrokeWidth: (value: number) => void;
-	// setFontFamily: (value: string) => void;
+	setFontFamily: (value: string) => void;
 };
 
 // Tools
@@ -167,6 +167,27 @@ export const TRIANGLE_OPTIONS = {
 };
 
 // Text
+
+export const fonts = [
+	"Arial",
+	"Arial Black",
+	"Verdana",
+	"Helvetica",
+	"Tahoma",
+	"Trebuchet MS",
+	"Times New Roman",
+	"Georgia",
+	"Garamond",
+	"Courier New",
+	"Brush Script MT",
+	"Palatino",
+	"Bookman",
+	"Comic Sans MS",
+	"Impact",
+	"Lucida Sans Unicode",
+	"Geneva",
+	"Lucida Console",
+];
 
 export const TEXT_OPTIONS = {
 	type: "textbox",

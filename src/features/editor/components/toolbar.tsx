@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BsBorderWidth } from "react-icons/bs";
 import { RxTransparencyGrid } from "react-icons/rx";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown } from "lucide-react";
 interface ToolbarProps {
 	editor: Editor | undefined;
 	activeTool: ActiveTool;
@@ -18,7 +18,7 @@ interface ToolbarProps {
 const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
 	const initialFillColor = editor?.getActiveFillColor();
 	const initialStrokeColor = editor?.getActiveStrokeColor();
-	// const initialFontFamily = editor?.getActiveFontFamily();
+	const initialFontFamily = editor?.getActiveFontFamily();
 	// const initialFontWeight = editor?.getActiveFontWeight() || FONT_WEIGHT;
 	// const initialFontStyle = editor?.getActiveFontStyle();
 	// const initialFontLinethrough = editor?.getActiveFontLinethrough();
@@ -29,7 +29,7 @@ const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
 	const [properties, setProperties] = useState({
 		fillColor: initialFillColor,
 		strokeColor: initialStrokeColor,
-		//   fontFamily: initialFontFamily,
+		fontFamily: initialFontFamily,
 		//   fontWeight: initialFontWeight,
 		//   fontStyle: initialFontStyle,
 		//   fontLinethrough: initialFontLinethrough,
@@ -108,6 +108,27 @@ const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
 					</Hint>
 				</div>
 			)}
+			{isText && (
+				<div className="flex items-center h-full justify-center">
+					<Hint label="Font" side="bottom" sideOffset={5}>
+						<Button
+							onClick={() => onChangeActiveTool("font")}
+							size="icon"
+							variant="ghost"
+							className={cn(
+								"w-auto px-2 text-sm",
+								activeTool === "font" && "bg-gray-100"
+							)}
+						>
+							<div className="max-w-[100px] truncate">
+								{properties.fontFamily}
+							</div>
+							<ChevronDown className="size-4 ml-2 shrink-0" />
+						</Button>
+					</Hint>
+				</div>
+			)}
+
 			<div className="flex items-center h-full justify-center">
 				<Hint label="Bring forward" side="bottom" sideOffset={5}>
 					<Button
