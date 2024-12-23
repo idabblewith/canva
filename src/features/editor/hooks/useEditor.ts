@@ -423,6 +423,24 @@ const buildEditor = ({
 			return value;
 		},
 
+		// Images
+		addImage: (value: string) => {
+			fabric.Image.fromURL(
+				value,
+				(image) => {
+					const workspace = getWorkspace();
+
+					image.scaleToWidth(workspace?.width / 2 || 0);
+					image.scaleToHeight(workspace?.height / 2 || 0);
+
+					addToCanvas(image);
+				},
+				{
+					crossOrigin: "anonymous",
+				}
+			);
+		},
+
 		// Opacity
 		changeOpacity: (value: number) => {
 			canvas.getActiveObjects().forEach((object) => {
