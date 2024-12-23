@@ -63,42 +63,6 @@ const app = new Hono()
 				input,
 			});
 
-			// if (Array.isArray(output)) {
-			// 	const firstItem = output[0]; // Assuming the first item is the ReadableStream
-
-			// 	if (firstItem instanceof ReadableStream) {
-			// 		const reader = firstItem.getReader();
-			// 		const chunks = [];
-			// 		let result;
-
-			// 		while (!(result = await reader.read()).done) {
-			// 			chunks.push(result.value); // Collect the binary chunks
-			// 		}
-
-			// 		// Combine all chunks into a single Blob
-			// 		const blob = new Blob(chunks);
-			// 		const imageUrl = URL.createObjectURL(blob); // Create a URL to access the image
-
-			// 		console.log("Image URL:", imageUrl);
-			// 		return c.json({ data: imageUrl });
-			// 	} else {
-			// 		console.log(
-			// 			"First item is not a ReadableStream:",
-			// 			firstItem
-			// 		);
-			// 		return c.json({ data: firstItem });
-			// 	}
-			// } else {
-			// 	console.log("Output is not an array:", output);
-			// 	return c.json({ data: output });
-			// }
-
-			// const output = await replicate.run(
-			// 	"stability-ai/stable-diffusion-3",
-			// 	{ input }
-			// );
-			// console.log(output);
-
 			const res = output as Array<string>;
 
 			return c.json({ data: res[0] });
