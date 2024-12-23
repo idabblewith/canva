@@ -18,7 +18,7 @@ import {
 	FONT_SIZE,
 } from "../types";
 import { useCanvasEvents } from "./useCanvasEvents";
-import { isTextType } from "../utils";
+import { isTextType, createFilter } from "../utils";
 import { ITextboxOptions } from "fabric/fabric-impl";
 
 const buildEditor = ({
@@ -439,6 +439,20 @@ const buildEditor = ({
 					crossOrigin: "anonymous",
 				}
 			);
+		},
+		changeImageFilter: (value: string) => {
+			const objects = canvas.getActiveObjects();
+			objects.forEach((object) => {
+				if (object.type === "image") {
+					const imageObject = object as fabric.Image;
+
+					const effect = createFilter(value);
+
+					imageObject.filters = effect ? [effect] : [];
+					imageObject.applyFilters();
+					canvas.renderAll();
+				}
+			});
 		},
 
 		// Opacity
