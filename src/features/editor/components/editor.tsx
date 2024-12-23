@@ -136,11 +136,11 @@ const Editor = () => {
 					activeTool={activeTool}
 					onChangeActiveTool={onChangeActiveTool}
 				/>
-				{/* <RemoveBgSidebar
+				<RemoveBgSidebar
 					editor={editor}
 					activeTool={activeTool}
 					onChangeActiveTool={onChangeActiveTool}
-				/> */}
+				/>
 				<main className="bg-muted flex-col flex-1 flex overflow-auto relative">
 					<Toolbar
 						editor={editor}
