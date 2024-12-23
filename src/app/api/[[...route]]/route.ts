@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import { handle } from "hono/vercel";
 
 import images from "./images";
+import ai from "./ai";
 
 // Deployable everywhere, revert to edge if only edge
 export const runtime = "nodejs";
@@ -16,7 +17,14 @@ const app = new Hono().basePath("/api");
 // 	return c.json({ message: `Post: ${params.id}, comment: ${params.commentId}` });
 // });
 
-const routes = app.route("/images", images);
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const routes = app
+	.route("/ai", ai)
+	//   .route("/users", users)
+	.route("/images", images);
+//   .route("/projects", projects)
+//   .route("/subscriptions", subscriptions);
 
 export const GET = handle(app);
 export const POST = handle(app);
