@@ -16,11 +16,13 @@ import {
 	TEXT_OPTIONS,
 	FONT_WEIGHT,
 	FONT_SIZE,
+	JSON_KEYS,
 } from "../types";
 import { useCanvasEvents } from "./useCanvasEvents";
 import { isTextType, createFilter } from "../utils";
 import { ITextboxOptions } from "fabric/fabric-impl";
 import { useClipboard } from "./useClipboard";
+import { useHistory } from "./useHistory";
 
 const buildEditor = ({
 	canvas,
@@ -30,7 +32,11 @@ const buildEditor = ({
 	strokeWidth,
 	strokeDashArray,
 	selectedObjects,
-	// save,
+	save,
+	undo,
+	redo,
+	canUndo,
+	canRedo,
 	autoZoom,
 	copy,
 	paste,
@@ -513,17 +519,21 @@ const buildEditor = ({
 			const workspace = getWorkspace();
 			workspace?.set({ width, height });
 			autoZoom();
-			// save();
+			save();
 		},
 		changeBackground: (value: string) => {
 			const workspace = getWorkspace();
 			workspace?.set({ fill: value });
 			canvas.renderAll();
-			// save();
+			save();
 		},
-		// Copy Paste Delete
+		// Copy Paste Undo Redo Delete
+		canUndo,
+		canRedo,
 		onCopy: () => copy(),
 		onPaste: () => paste(),
+		onUndo: () => undo(),
+		onRedo: () => redo(),
 		delete: () => {
 			canvas
 				.getActiveObjects()
@@ -553,18 +563,37 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 		container,
 	});
 
+	const { copy, paste } = useClipboard({ canvas });
+
+	const {
+		save,
+		canRedo,
+		canUndo,
+		undo,
+		redo,
+		canvasHistory,
+		setHistoryIndex,
+	} = useHistory({
+		canvas,
+		// saveCallback,
+	});
+
 	useCanvasEvents({
+		save,
 		canvas,
 		setSelectedObjects,
 		clearSelectionCallback,
 		// container,
 	});
 
-	const { copy, paste } = useClipboard({ canvas });
-
 	const editor = useMemo(() => {
 		if (canvas)
 			return buildEditor({
+				save,
+				undo,
+				redo,
+				canUndo,
+				canRedo,
 				autoZoom,
 				copy,
 				paste,
@@ -583,6 +612,11 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 			});
 		return undefined;
 	}, [
+		save,
+		undo,
+		redo,
+		canUndo,
+		canRedo,
 		autoZoom,
 		copy,
 		paste,
@@ -639,8 +673,17 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 
 			setCanvas(initialCanvas);
 			setContainer(initialContainer);
+
+			const currentState = JSON.stringify(
+				initialCanvas?.toJSON(JSON_KEYS)
+			);
+			canvasHistory.current = [currentState];
+			setHistoryIndex(0);
 		},
-		[]
+		[
+			canvasHistory, // Not required - satisfies linter, this is from useRef
+			setHistoryIndex, // Not required - satifies linter, this is from useState
+		]
 	);
 
 	return { init, editor };

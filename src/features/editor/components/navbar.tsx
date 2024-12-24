@@ -18,16 +18,20 @@ import { Separator } from "@/components/ui/separator";
 import { Hint } from "@/components/hint";
 import { cn } from "@/lib/utils";
 import { BsCloudCheck } from "react-icons/bs";
-import { ActiveTool } from "../types";
+import { ActiveTool, Editor } from "../types";
 
 interface INavbarProps {
 	// id: string;
-	// editor: Editor | undefined;
+	editor: Editor | undefined;
 	activeTool: ActiveTool;
 	onChangeActiveTool: (tool: ActiveTool) => void;
 }
 
-const EditorNavbar = ({ activeTool, onChangeActiveTool }: INavbarProps) => {
+const EditorNavbar = ({
+	activeTool,
+	onChangeActiveTool,
+	editor,
+}: INavbarProps) => {
 	const openFilePicker = () => {
 		console.log("Open file picker");
 	};
@@ -71,20 +75,20 @@ const EditorNavbar = ({ activeTool, onChangeActiveTool }: INavbarProps) => {
 				</Hint>
 				<Hint label="Undo" side="bottom" sideOffset={10}>
 					<Button
-						// disabled={!editor?.canUndo()}
+						disabled={!editor?.canUndo()}
 						variant="ghost"
 						size="icon"
-						// onClick={() => editor?.onUndo()}
+						onClick={() => editor?.onUndo()}
 					>
 						<Undo2 className="size-4" />
 					</Button>
 				</Hint>
 				<Hint label="Redo" side="bottom" sideOffset={10}>
 					<Button
-						// disabled={!editor?.canRedo()}
+						disabled={!editor?.canRedo()}
 						variant="ghost"
 						size="icon"
-						// onClick={() => editor?.onRedo()}
+						onClick={() => editor?.onRedo()}
 					>
 						<Redo2 className="size-4" />
 					</Button>

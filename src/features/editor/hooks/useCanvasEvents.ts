@@ -2,21 +2,18 @@ import { fabric } from "fabric";
 import { useEffect } from "react";
 
 interface UseCanvasEventsProps {
-	// save: () => void;
+	save: () => void;
 	canvas: fabric.Canvas | null;
 	setSelectedObjects: (objects: fabric.Object[]) => void;
 	clearSelectionCallback?: () => void;
 }
 
 export const useCanvasEvents = ({
-	// save,
+	save,
 	canvas,
 	setSelectedObjects,
 	clearSelectionCallback,
 }: UseCanvasEventsProps) => {
-	const save = () => {
-		console.log("Saving...");
-	};
 	useEffect(() => {
 		if (canvas) {
 			canvas.on("object:added", () => save());
