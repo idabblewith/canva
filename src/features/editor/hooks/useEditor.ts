@@ -23,6 +23,7 @@ import { isTextType, createFilter } from "../utils";
 import { ITextboxOptions } from "fabric/fabric-impl";
 import { useClipboard } from "./useClipboard";
 import { useHistory } from "./useHistory";
+import { useHotkeys } from "./useHotkeys";
 
 const buildEditor = ({
 	canvas,
@@ -584,6 +585,15 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 		setSelectedObjects,
 		clearSelectionCallback,
 		// container,
+	});
+
+	useHotkeys({
+		undo,
+		redo,
+		copy,
+		paste,
+		save,
+		canvas,
 	});
 
 	const editor = useMemo(() => {
