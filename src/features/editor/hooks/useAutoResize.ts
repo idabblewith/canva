@@ -74,5 +74,7 @@ export const useAutoResize = ({ canvas, container }: IAutoResize) => {
 				resizeObserver.disconnect();
 			}
 		};
-	}, [canvas, container]);
+	}, [canvas, container, autoZoom]);
+
+	return { autoZoom };
 };

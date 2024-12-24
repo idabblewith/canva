@@ -30,6 +30,8 @@ const buildEditor = ({
 	strokeWidth,
 	strokeDashArray,
 	selectedObjects,
+	// save,
+	autoZoom,
 	copy,
 	paste,
 	setFillColor,
@@ -112,7 +114,6 @@ const buildEditor = ({
 			});
 			canvas.renderAll();
 		},
-
 		changeStrokeColor: (value: string) => {
 			setStrokeColor(value);
 			canvas.getActiveObjects().forEach((object) => {
@@ -476,7 +477,50 @@ const buildEditor = ({
 
 			return value;
 		},
+		// Drawing
+		enableDrawingMode: () => {
+			canvas.discardActiveObject();
+			canvas.renderAll();
+			canvas.isDrawingMode = true;
+			canvas.freeDrawingBrush.width = strokeWidth;
+			canvas.freeDrawingBrush.color = strokeColor;
+		},
+		disableDrawingMode: () => {
+			canvas.isDrawingMode = false;
+		},
 
+		// Settings
+		getWorkspace,
+		zoomIn: () => {
+			let zoomRatio = canvas.getZoom();
+			zoomRatio += 0.05;
+			const center = canvas.getCenter();
+			canvas.zoomToPoint(
+				new fabric.Point(center.left, center.top),
+				zoomRatio > 1.25 ? 1.25 : zoomRatio
+			);
+		},
+		zoomOut: () => {
+			let zoomRatio = canvas.getZoom();
+			zoomRatio -= 0.05;
+			const center = canvas.getCenter();
+			canvas.zoomToPoint(
+				new fabric.Point(center.left, center.top),
+				zoomRatio < 0.2 ? 0.2 : zoomRatio
+			);
+		},
+		changeSize: ({ width, height }: { width: number; height: number }) => {
+			const workspace = getWorkspace();
+			workspace?.set({ width, height });
+			autoZoom();
+			// save();
+		},
+		changeBackground: (value: string) => {
+			const workspace = getWorkspace();
+			workspace?.set({ fill: value });
+			canvas.renderAll();
+			// save();
+		},
 		// Copy Paste Delete
 		onCopy: () => copy(),
 		onPaste: () => paste(),
@@ -504,7 +548,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 	const [strokeDashArray, setStrokeDashArray] =
 		useState<number[]>(STROKE_DASH_ARRAY);
 
-	useAutoResize({
+	const { autoZoom } = useAutoResize({
 		canvas,
 		container,
 	});
@@ -521,6 +565,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 	const editor = useMemo(() => {
 		if (canvas)
 			return buildEditor({
+				autoZoom,
 				copy,
 				paste,
 				canvas,
@@ -538,6 +583,9 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 			});
 		return undefined;
 	}, [
+		autoZoom,
+		copy,
+		paste,
 		canvas,
 		selectedObjects,
 		fillColor,

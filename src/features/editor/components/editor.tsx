@@ -19,32 +19,11 @@ import { ImageSidebar } from "./image-sidebar";
 import { FilterSidebar } from "./filter-sidebar";
 import { AiSidebar } from "./ai-sidebar";
 import { RemoveBgSidebar } from "./remove-bg-sidebar";
+import { DrawSidebar } from "./draw-sidebar";
+import { SettingsSidebar } from "./settings-sidebar";
 
 const Editor = () => {
 	const [activeTool, setActiveTool] = useState<ActiveTool>("select");
-
-	const onChangeActiveTool = useCallback(
-		(tool: ActiveTool) => {
-			if (tool === "draw") {
-				// editor?.enableDrawingMode();
-			}
-
-			if (activeTool === "draw") {
-				// editor?.disableDrawingMode();
-			}
-
-			if (tool === activeTool) {
-				return setActiveTool("select");
-			}
-
-			setActiveTool(tool);
-		},
-		[
-			activeTool,
-			// editor
-		]
-	);
-
 	const onClearSelection = useCallback(() => {
 		if (selectionDependentTools.includes(activeTool)) {
 			setActiveTool("select");
@@ -55,6 +34,26 @@ const Editor = () => {
 	const { init, editor } = useEditor({
 		clearSelectionCallback: onClearSelection,
 	});
+
+	const onChangeActiveTool = useCallback(
+		(tool: ActiveTool) => {
+			if (tool === "draw") {
+				editor?.enableDrawingMode();
+			}
+
+			if (activeTool === "draw") {
+				editor?.disableDrawingMode();
+			}
+
+			if (tool === activeTool) {
+				return setActiveTool("select");
+			}
+
+			setActiveTool(tool);
+		},
+		[activeTool, editor]
+	);
+
 	const canvasRef = useRef(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -141,6 +140,16 @@ const Editor = () => {
 					activeTool={activeTool}
 					onChangeActiveTool={onChangeActiveTool}
 				/>
+				<DrawSidebar
+					editor={editor}
+					activeTool={activeTool}
+					onChangeActiveTool={onChangeActiveTool}
+				/>
+				<SettingsSidebar
+					editor={editor}
+					activeTool={activeTool}
+					onChangeActiveTool={onChangeActiveTool}
+				/>
 				<main className="bg-muted flex-col flex-1 flex overflow-auto relative">
 					<Toolbar
 						editor={editor}
@@ -154,7 +163,7 @@ const Editor = () => {
 					>
 						<canvas ref={canvasRef} />
 					</div>
-					<Footer />
+					<Footer editor={editor} />
 				</main>
 			</div>
 		</div>
