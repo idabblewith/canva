@@ -21,11 +21,11 @@ export const FONT_SIZE = 32;
 export const FONT_WEIGHT = 400;
 
 export interface Editor {
-	// savePng: () => void;
-	// saveJpg: () => void;
-	// saveSvg: () => void;
-	// saveJson: () => void;
-	// loadJson: (json: string) => void;
+	savePng: () => void;
+	saveJpg: () => void;
+	saveSvg: () => void;
+	saveJson: () => void;
+	loadJson: (json: string) => void;
 	onUndo: () => void;
 	onRedo: () => void;
 	canUndo: () => boolean;

@@ -19,11 +19,17 @@ import {
 	JSON_KEYS,
 } from "../types";
 import { useCanvasEvents } from "./useCanvasEvents";
-import { isTextType, createFilter } from "../utils";
+import {
+	isTextType,
+	createFilter,
+	downloadFile,
+	transformText,
+} from "../utils";
 import { ITextboxOptions } from "fabric/fabric-impl";
 import { useClipboard } from "./useClipboard";
 import { useHistory } from "./useHistory";
 import { useHotkeys } from "./useHotkeys";
+import { useWindowEvents } from "./useWindowEvents";
 
 const buildEditor = ({
 	canvas,
@@ -47,6 +53,69 @@ const buildEditor = ({
 	setStrokeDashArray,
 	setFontFamily,
 }: BuildEditorProps) => {
+	// Saving / Loading
+	const generateSaveOptions = () => {
+		const { width, height, left, top } = getWorkspace() as fabric.Rect;
+
+		return {
+			name: "Image",
+			format: "png",
+			quality: 1,
+			width,
+			height,
+			left,
+			top,
+		};
+	};
+
+	const savePng = () => {
+		const options = generateSaveOptions();
+
+		canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+		const dataUrl = canvas.toDataURL(options);
+
+		downloadFile(dataUrl, "png");
+		autoZoom();
+	};
+
+	const saveSvg = () => {
+		const options = generateSaveOptions();
+
+		canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+		const dataUrl = canvas.toDataURL(options);
+
+		downloadFile(dataUrl, "svg");
+		autoZoom();
+	};
+
+	const saveJpg = () => {
+		const options = generateSaveOptions();
+
+		canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+		const dataUrl = canvas.toDataURL(options);
+
+		downloadFile(dataUrl, "jpg");
+		autoZoom();
+	};
+
+	const saveJson = async () => {
+		const dataUrl = canvas.toJSON(JSON_KEYS);
+
+		await transformText(dataUrl.objects);
+		const fileString = `data:text/json;charset=utf-8,${encodeURIComponent(
+			JSON.stringify(dataUrl, null, "\t")
+		)}`;
+		downloadFile(fileString, "json");
+	};
+
+	const loadJson = (json: string) => {
+		const data = JSON.parse(json);
+
+		canvas.loadFromJSON(data, () => {
+			autoZoom();
+		});
+	};
+
 	const getWorkspace = () => {
 		return canvas.getObjects().find((object) => object.name === "clip");
 	};
@@ -528,6 +597,12 @@ const buildEditor = ({
 			canvas.renderAll();
 			save();
 		},
+		// Saving and Loading
+		savePng,
+		saveJpg,
+		saveSvg,
+		saveJson,
+		loadJson,
 		// Copy Paste Undo Redo Delete
 		canUndo,
 		canRedo,
@@ -548,6 +623,7 @@ const buildEditor = ({
 };
 
 export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
+	useWindowEvents();
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [container, setContainer] = useState<HTMLDivElement | null>(null);
 	const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);

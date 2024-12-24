@@ -19,6 +19,7 @@ import { Hint } from "@/components/hint";
 import { cn } from "@/lib/utils";
 import { BsCloudCheck } from "react-icons/bs";
 import { ActiveTool, Editor } from "../types";
+import { useFilePicker } from "use-file-picker";
 
 interface INavbarProps {
 	// id: string;
@@ -32,10 +33,19 @@ const EditorNavbar = ({
 	onChangeActiveTool,
 	editor,
 }: INavbarProps) => {
-	const openFilePicker = () => {
-		console.log("Open file picker");
-	};
-
+	const { openFilePicker } = useFilePicker({
+		accept: ".json",
+		onFilesSuccessfullySelected: ({ plainFiles }: any) => {
+			if (plainFiles && plainFiles.length > 0) {
+				const file = plainFiles[0];
+				const reader = new FileReader();
+				reader.readAsText(file, "UTF-8");
+				reader.onload = () => {
+					editor?.loadJson(reader.result as string);
+				};
+			}
+		},
+	});
 	return (
 		<nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
 			<Logo />
@@ -111,7 +121,7 @@ const EditorNavbar = ({
 						<DropdownMenuContent align="end" className="min-w-60">
 							<DropdownMenuItem
 								className="flex items-center gap-x-2"
-								// onClick={() => editor?.saveJson()}
+								onClick={() => editor?.saveJson()}
 							>
 								<CiFileOn className="size-8" />
 								<div>
@@ -123,7 +133,7 @@ const EditorNavbar = ({
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								className="flex items-center gap-x-2"
-								// onClick={() => editor?.savePng()}
+								onClick={() => editor?.savePng()}
 							>
 								<CiFileOn className="size-8" />
 								<div>
@@ -135,7 +145,7 @@ const EditorNavbar = ({
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								className="flex items-center gap-x-2"
-								// onClick={() => editor?.saveJpg()}
+								onClick={() => editor?.saveJpg()}
 							>
 								<CiFileOn className="size-8" />
 								<div>
@@ -147,7 +157,7 @@ const EditorNavbar = ({
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								className="flex items-center gap-x-2"
-								// onClick={() => editor?.saveSvg()}
+								onClick={() => editor?.saveSvg()}
 							>
 								<CiFileOn className="size-8" />
 								<div>
