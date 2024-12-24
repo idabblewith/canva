@@ -29,8 +29,8 @@ export interface Editor {
 	// changeSize: (value: { width: number; height: number }) => void;
 	// enableDrawingMode: () => void;
 	// disableDrawingMode: () => void;
-	// onCopy: () => void;
-	// onPaste: () => void;
+	onCopy: () => void;
+	onPaste: () => void;
 	changeImageFilter: (value: string) => void;
 	addImage: (value: string) => void;
 	delete: () => void;
@@ -78,8 +78,8 @@ export type BuildEditorProps = {
 	// canUndo: () => boolean;
 	// canRedo: () => boolean;
 	// autoZoom: () => void;
-	// copy: () => void;
-	// paste: () => void;
+	copy: () => void;
+	paste: () => void;
 	canvas: fabric.Canvas;
 	fillColor: string;
 	strokeColor: string;
