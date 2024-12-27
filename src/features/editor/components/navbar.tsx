@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { BsCloudCheck } from "react-icons/bs";
 import { ActiveTool, Editor } from "../types";
 import { useFilePicker } from "use-file-picker";
+import { UserButton } from "@/features/auth/components/user-button";
 
 interface INavbarProps {
 	// id: string;
@@ -169,7 +170,7 @@ const EditorNavbar = ({
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
-					{/* <UserButton /> */}
+					<UserButton />
 				</div>
 			</div>
 		</nav>
