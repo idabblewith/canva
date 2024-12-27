@@ -1,39 +1,66 @@
 "use client";
 
-import React from "react";
-import Logo from "./logo";
-import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { CiFileOn } from "react-icons/ci";
+import { BsCloudCheck, BsCloudSlash } from "react-icons/bs";
+import { useFilePicker } from "use-file-picker";
+import { useMutationState } from "@tanstack/react-query";
 import {
 	ChevronDown,
 	Download,
+	Loader,
 	MousePointerClick,
 	Redo2,
 	Undo2,
 } from "lucide-react";
-import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
-import { CiFileOn } from "react-icons/ci";
-import { Separator } from "@/components/ui/separator";
-import { Hint } from "@/components/hint";
-import { cn } from "@/lib/utils";
-import { BsCloudCheck } from "react-icons/bs";
-import { ActiveTool, Editor } from "../types";
-import { useFilePicker } from "use-file-picker";
+
 import { UserButton } from "@/features/auth/components/user-button";
 
-interface INavbarProps {
-	// id: string;
+import { ActiveTool, Editor } from "@/features/editor/types";
+import Logo from "@/features/editor/components/logo";
+
+import { cn } from "@/lib/utils";
+import { Hint } from "@/components/hint";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+	DropdownMenu,
+	DropdownMenuItem,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useEffect } from "react";
+
+interface NavbarProps {
+	id: string;
 	editor: Editor | undefined;
 	activeTool: ActiveTool;
 	onChangeActiveTool: (tool: ActiveTool) => void;
 }
 
 const EditorNavbar = ({
+	id,
+	editor,
 	activeTool,
 	onChangeActiveTool,
-	editor,
-}: INavbarProps) => {
+}: NavbarProps) => {
+	const data = useMutationState({
+		filters: {
+			mutationKey: ["project", { id }],
+			exact: true,
+		},
+		select: (mutation) => mutation.state.status,
+	});
+
+	useEffect(() => {
+		console.log("data");
+		console.log(data);
+	}, [data]);
+
+	const currentStatus = data[data.length - 1];
+
+	const isError = currentStatus === "error";
+	const isPending = currentStatus === "pending";
+
 	const { openFilePicker } = useFilePicker({
 		accept: ".json",
 		onFilesSuccessfullySelected: ({ plainFiles }: any) => {
@@ -47,6 +74,7 @@ const EditorNavbar = ({
 			}
 		},
 	});
+
 	return (
 		<nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
 			<Logo />
@@ -105,12 +133,30 @@ const EditorNavbar = ({
 					</Button>
 				</Hint>
 				<Separator orientation="vertical" className="mx-2" />
-
-				<div className="flex items-center gap-x-2">
-					<BsCloudCheck className="size-[20px] text-muted-foreground" />
-					<div className="text-xs text-muted-foreground">Saved</div>
-				</div>
-
+				{isPending && (
+					<div className="flex items-center gap-x-2">
+						<Loader className="size-4 animate-spin text-muted-foreground" />
+						<div className="text-xs text-muted-foreground">
+							Saving...
+						</div>
+					</div>
+				)}
+				{!isPending && isError && (
+					<div className="flex items-center gap-x-2">
+						<BsCloudSlash className="size-[20px] text-muted-foreground" />
+						<div className="text-xs text-muted-foreground">
+							Failed to save
+						</div>
+					</div>
+				)}
+				{!isPending && !isError && (
+					<div className="flex items-center gap-x-2">
+						<BsCloudCheck className="size-[20px] text-muted-foreground" />
+						<div className="text-xs text-muted-foreground">
+							Saved
+						</div>
+					</div>
+				)}
 				<div className="ml-auto flex items-center gap-x-4">
 					<DropdownMenu modal={false}>
 						<DropdownMenuTrigger asChild>

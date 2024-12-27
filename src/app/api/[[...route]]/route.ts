@@ -8,14 +8,16 @@ import authConfig from "@/auth.config";
 import images from "./images";
 import ai from "./ai";
 import users from "./users";
+import projects from "./projects";
 
 // Deployable everywhere, revert to edge if only edge
 export const runtime = "nodejs";
 
 function getAuthConfig(c: Context): AuthConfig {
 	return {
-		secret: c.env.AUTH_SECRET,
+		// secret: c.env.AUTH_SECRET,
 		// ...authConfig,
+		secret: process.env.AUTH_SECRET,
 		...(authConfig as any), // Added due to ts errors with new nextjs auth libs
 	};
 }
@@ -34,8 +36,8 @@ app.use("*", initAuthConfig(getAuthConfig));
 const routes = app
 	.route("/ai", ai)
 	.route("/images", images)
-	.route("/users", users);
-//   .route("/projects", projects)
+	.route("/users", users)
+	.route("/projects", projects);
 //   .route("/subscriptions", subscriptions);
 
 export const GET = handle(app);

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { fabric } from "fabric";
 import { useAutoResize } from "./useAutoResize";
 import {
@@ -30,6 +30,7 @@ import { useClipboard } from "./useClipboard";
 import { useHistory } from "./useHistory";
 import { useHotkeys } from "./useHotkeys";
 import { useWindowEvents } from "./useWindowEvents";
+import { useLoadState } from "./useLoadState";
 
 const buildEditor = ({
 	canvas,
@@ -622,8 +623,19 @@ const buildEditor = ({
 	};
 };
 
-export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
+export const useEditor = ({
+	defaultState,
+	defaultHeight,
+	defaultWidth,
+	clearSelectionCallback,
+	saveCallback,
+}: EditorHookProps) => {
 	useWindowEvents();
+
+	const initialState = useRef(defaultState);
+	const initialHeight = useRef(defaultHeight);
+	const initialWidth = useRef(defaultWidth);
+
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [container, setContainer] = useState<HTMLDivElement | null>(null);
 	const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);
@@ -652,7 +664,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 		setHistoryIndex,
 	} = useHistory({
 		canvas,
-		// saveCallback,
+		saveCallback,
 	});
 
 	useCanvasEvents({
@@ -660,7 +672,6 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 		canvas,
 		setSelectedObjects,
 		clearSelectionCallback,
-		// container,
 	});
 
 	useHotkeys({
@@ -670,6 +681,14 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 		paste,
 		save,
 		canvas,
+	});
+
+	useLoadState({
+		canvas,
+		autoZoom,
+		initialState,
+		canvasHistory,
+		setHistoryIndex,
 	});
 
 	const editor = useMemo(() => {
@@ -720,48 +739,44 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 			initialCanvas,
 			initialContainer,
 		}: {
-			initialCanvas: fabric.Canvas | null;
-			initialContainer: HTMLDivElement | null;
+			initialCanvas: fabric.Canvas;
+			initialContainer: HTMLDivElement;
 		}) => {
 			fabric.Object.prototype.set({
-				transparentCorners: false,
-				cornerColor: "#49f",
+				cornerColor: "#FFF",
 				cornerStyle: "circle",
-				borderColor: "rgba(0,0,0,0.3)",
+				borderColor: "#3b82f6",
 				borderScaleFactor: 1.5,
+				transparentCorners: false,
 				borderOpacityWhenMoving: 1,
-				cornerSize: 12,
-				padding: 5,
+				cornerStrokeColor: "#3b82f6",
 			});
 
 			const initialWorkspace = new fabric.Rect({
-				width: 400,
-				height: 600,
+				width: initialWidth.current,
+				height: initialHeight.current,
 				name: "clip",
 				fill: "white",
 				selectable: false,
 				hasControls: false,
 				shadow: new fabric.Shadow({
-					color: "rgba(0,0,0,0.3)",
+					color: "rgba(0,0,0,0.8)",
 					blur: 5,
 				}),
 			});
 
-			if (initialCanvas && initialContainer) {
-				// Set the width and height of the canvas to the width and height of the container
-				initialCanvas.setWidth(initialContainer.offsetWidth);
-				initialCanvas.setHeight(initialContainer.offsetHeight);
+			initialCanvas.setWidth(initialContainer.offsetWidth);
+			initialCanvas.setHeight(initialContainer.offsetHeight);
 
-				initialCanvas.add(initialWorkspace);
-				initialCanvas.centerObject(initialWorkspace);
-				initialCanvas.clipPath = initialWorkspace;
-			}
+			initialCanvas.add(initialWorkspace);
+			initialCanvas.centerObject(initialWorkspace);
+			initialCanvas.clipPath = initialWorkspace;
 
 			setCanvas(initialCanvas);
 			setContainer(initialContainer);
 
 			const currentState = JSON.stringify(
-				initialCanvas?.toJSON(JSON_KEYS)
+				initialCanvas.toJSON(JSON_KEYS)
 			);
 			canvasHistory.current = [currentState];
 			setHistoryIndex(0);
