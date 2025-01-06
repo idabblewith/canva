@@ -24,6 +24,7 @@ import { SettingsSidebar } from "./settings-sidebar";
 import { ResponseType } from "@/features/projects/api/useGetProject";
 import { useUpdateProject } from "@/features/projects/api/useUpdateProject";
 import debounce from "lodash.debounce";
+import { TemplateSidebar } from "./template-sidebar";
 
 interface EditorProps {
 	initialData: ResponseType["data"];
@@ -86,7 +87,7 @@ const Editor = ({ initialData }: EditorProps) => {
 
 		init({
 			initialCanvas: canvas,
-			initialContainer: containerRef.current,
+			initialContainer: containerRef.current!,
 		});
 
 		return () => {
@@ -144,6 +145,11 @@ const Editor = ({ initialData }: EditorProps) => {
 					onChangeActiveTool={onChangeActiveTool}
 				/>
 				<ImageSidebar
+					editor={editor}
+					activeTool={activeTool}
+					onChangeActiveTool={onChangeActiveTool}
+				/>
+				<TemplateSidebar
 					editor={editor}
 					activeTool={activeTool}
 					onChangeActiveTool={onChangeActiveTool}

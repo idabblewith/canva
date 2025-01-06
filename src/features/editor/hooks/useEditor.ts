@@ -332,7 +332,9 @@ const buildEditor = ({
 			workspace?.sendToBack();
 		},
 		// Text
-		addText: (value: string, options: ITextboxOptions) => {
+		// eslint:disable-next-line: no-shadowed-variable
+		// @ts-ignore
+		addText: (value, options) => {
 			const object = new fabric.Textbox(value, {
 				...TEXT_OPTIONS,
 				fill: fillColor,
@@ -618,6 +620,7 @@ const buildEditor = ({
 			canvas.discardActiveObject();
 			canvas.renderAll();
 		},
+		autoZoom,
 		canvas,
 		selectedObjects,
 	};

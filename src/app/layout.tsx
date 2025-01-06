@@ -5,6 +5,8 @@ import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import { Modals } from "@/components/modals";
+import { SubscriptionAlert } from "@/features/subscriptions/components/subscription-alert";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -34,8 +36,12 @@ export default async function RootLayout({
 				<body
 					className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 				>
-					<Toaster />
-					<Providers>{children}</Providers>
+					<Providers>
+						<Toaster />
+						<Modals />
+						<SubscriptionAlert />
+						{children}
+					</Providers>
 				</body>
 			</html>
 		</SessionProvider>

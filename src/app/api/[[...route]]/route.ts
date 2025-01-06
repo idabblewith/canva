@@ -9,6 +9,7 @@ import images from "./images";
 import ai from "./ai";
 import users from "./users";
 import projects from "./projects";
+import subscriptions from "./subscriptions";
 
 // Deployable everywhere, revert to edge if only edge
 export const runtime = "nodejs";
@@ -25,20 +26,14 @@ function getAuthConfig(c: Context): AuthConfig {
 const app = new Hono().basePath("/api");
 app.use("*", initAuthConfig(getAuthConfig));
 
-// app.get("/posts/:id/comments/:commentId", (c) => {
-// 	// const { id, commentId } = c.req.param();
-// 	const params = c.req.param();
-// 	return c.json({ message: `Post: ${params.id}, comment: ${params.commentId}` });
-// });
-
 // @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const routes = app
 	.route("/ai", ai)
 	.route("/images", images)
 	.route("/users", users)
-	.route("/projects", projects);
-//   .route("/subscriptions", subscriptions);
+	.route("/projects", projects)
+	.route("/subscriptions", subscriptions);
 
 export const GET = handle(app);
 export const POST = handle(app);
