@@ -18,11 +18,10 @@ const nextConfig: NextConfig = {
 			},
 		],
 	},
-	optimizeFonts: false,
 	webpack: (config, { dev, isServer }) => {
 		// Only apply optimizations for production builds
 		if (!dev && !isServer) {
-			// Disable specific optimizations that might be causing issues
+			// Disable minimization
 			config.optimization.minimize = false;
 		}
 		return config;
