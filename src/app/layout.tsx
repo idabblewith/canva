@@ -11,11 +11,17 @@ import { SubscriptionAlert } from "@/features/subscriptions/components/subscript
 const geistSans = Geist({
 	variable: "--font-geist-sans",
 	subsets: ["latin"],
+	display: "swap",
+	fallback: ["system-ui", "sans-serif"],
+	preload: false,
 });
 
 const geistMono = Geist_Mono({
 	variable: "--font-geist-mono",
 	subsets: ["latin"],
+	display: "swap",
+	fallback: ["monospace"],
+	preload: false,
 });
 
 export const metadata: Metadata = {

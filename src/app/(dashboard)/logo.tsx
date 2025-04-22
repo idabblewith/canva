@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 const font = Space_Grotesk({
 	weight: ["700"],
 	subsets: ["latin"],
+	display: "swap",
+	fallback: ["system-ui", "arial"],
 });
 
 export const Logo = () => {
