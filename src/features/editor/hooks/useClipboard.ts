@@ -6,9 +6,11 @@ interface UseClipboardProps {
 }
 
 export const useClipboard = ({ canvas }: UseClipboardProps) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const clipboard = useRef<any>(null);
 
 	const copy = useCallback(() => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		canvas?.getActiveObject()?.clone((cloned: any) => {
 			clipboard.current = cloned;
 		});
@@ -17,6 +19,7 @@ export const useClipboard = ({ canvas }: UseClipboardProps) => {
 	const paste = useCallback(() => {
 		if (!clipboard.current) return;
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		clipboard.current.clone((clonedObj: any) => {
 			canvas?.discardActiveObject();
 			clonedObj.set({
@@ -27,6 +30,7 @@ export const useClipboard = ({ canvas }: UseClipboardProps) => {
 
 			if (clonedObj.type === "activeSelection") {
 				clonedObj.canvas = canvas;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				clonedObj.forEachObject((obj: any) => {
 					canvas?.add(obj);
 				});

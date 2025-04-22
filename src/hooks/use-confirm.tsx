@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { JSX, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +19,7 @@ export const useConfirm = (
 	} | null>(null);
 
 	const confirm = () =>
-		new Promise((resolve, reject) => {
+		new Promise((resolve) => {
 			setPromise({ resolve });
 		});
 

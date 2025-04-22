@@ -20,7 +20,7 @@ const app = new Hono()
 		const [subscription] = await db
 			.select()
 			.from(subscriptions)
-			.where(eq(subscriptions.userId, auth.token.id));
+			.where(eq(subscriptions.userId, String(auth.token.id)));
 
 		if (!subscription) {
 			return c.json({ error: "No subscription found" }, 404);
@@ -47,7 +47,7 @@ const app = new Hono()
 		const [subscription] = await db
 			.select()
 			.from(subscriptions)
-			.where(eq(subscriptions.userId, auth.token.id));
+			.where(eq(subscriptions.userId, String(auth.token.id)));
 
 		const active = checkIsActive(subscription);
 
@@ -80,7 +80,7 @@ const app = new Hono()
 				},
 			],
 			metadata: {
-				userId: auth.token.id,
+				userId: String(auth.token.id),
 			},
 		});
 
@@ -105,6 +105,7 @@ const app = new Hono()
 				process.env.STRIPE_WEBHOOK_SECRET!
 			);
 		} catch (error) {
+			console.error("Webhook error:", error);
 			return c.json({ error: "Invalid signature" }, 400);
 		}
 
@@ -119,18 +120,23 @@ const app = new Hono()
 				return c.json({ error: "Invalid session" }, 400);
 			}
 
-			await db.insert(subscriptions).values({
-				status: subscription.status,
-				userId: session.metadata.userId,
-				subscriptionId: subscription.id,
-				customerId: subscription.customer as string,
-				priceId: subscription.items.data[0].price.product as string,
-				currentPeriodEnd: new Date(
-					subscription.current_period_end * 1000
-				),
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			});
+			try {
+				await db.insert(subscriptions).values({
+					status: subscription.status,
+					userId: session.metadata.userId,
+					subscriptionId: subscription.id,
+					customerId: subscription.customer as string,
+					priceId: subscription.items.data[0].price.product as string,
+					currentPeriodEnd: new Date(
+						subscription.current_period_end * 1000
+					),
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				});
+			} catch (error) {
+				console.error("Database error:", error);
+				return c.json({ error: "Database operation failed" }, 500);
+			}
 		}
 
 		if (event.type === "invoice.payment_succeeded") {

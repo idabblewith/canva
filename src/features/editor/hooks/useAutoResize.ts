@@ -22,7 +22,8 @@ export const useAutoResize = ({ canvas, container }: IAutoResize) => {
 		const localWorkspace = canvas
 			.getObjects()
 			.find((object) => object.name === "clip");
-		// @ts-ignore
+		// @ts-expect-error Property 'findScaleToFit' does not exist on type 'IUtil'.ts(2339)
+
 		const scale = fabric.util.findScaleToFit(localWorkspace, {
 			width,
 			height,
@@ -51,7 +52,7 @@ export const useAutoResize = ({ canvas, container }: IAutoResize) => {
 			canvas.height / 2 - workSpaceCenter.y * viewportTransform[3];
 
 		canvas.setViewportTransform(viewportTransform);
-
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		localWorkspace.clone((cloned: any) => {
 			canvas.clipPath = cloned;
 			canvas.requestRenderAll();

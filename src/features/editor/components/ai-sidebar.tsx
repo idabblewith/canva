@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { usePaywall } from "@/features/subscriptions/hooks/usePaywall";
+// import { usePaywall } from "@/features/subscriptions/hooks/usePaywall";
 
 import { ActiveTool, Editor } from "@/features/editor/types";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
@@ -24,7 +24,7 @@ export const AiSidebar = ({
 	activeTool,
 	onChangeActiveTool,
 }: AiSidebarProps) => {
-	const { shouldBlock, triggerPaywall } = usePaywall();
+	// const { shouldBlock, triggerPaywall } = usePaywall();
 	const mutation = useGenerateImage();
 
 	const [value, setValue] = useState("");
@@ -32,10 +32,10 @@ export const AiSidebar = ({
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (shouldBlock) {
-			triggerPaywall();
-			return;
-		}
+		// if (shouldBlock) {
+		// 	triggerPaywall();
+		// 	return;
+		// }
 
 		mutation.mutate(
 			{ prompt: value },

@@ -25,7 +25,7 @@ import {
 	downloadFile,
 	transformText,
 } from "../utils";
-import { ITextboxOptions } from "fabric/fabric-impl";
+// import { ITextboxOptions } from "fabric/fabric-impl";
 import { useClipboard } from "./useClipboard";
 import { useHistory } from "./useHistory";
 import { useHotkeys } from "./useHotkeys";
@@ -127,7 +127,7 @@ const buildEditor = ({
 
 		if (!center) return;
 
-		// @ts-ignore
+		// @ts-expect-error Property '_centerObject' does not exist on type 'Canvas'. Did you mean 'centerObject'?ts(2551)
 		canvas._centerObject(object, center);
 	};
 
@@ -333,7 +333,7 @@ const buildEditor = ({
 		},
 		// Text
 		// eslint:disable-next-line: no-shadowed-variable
-		// @ts-ignore
+		// @ts-expect-error Parameter 'options' implicitly has an 'any' type.ts(7006)
 		addText: (value, options) => {
 			const object = new fabric.Textbox(value, {
 				...TEXT_OPTIONS,
@@ -347,7 +347,7 @@ const buildEditor = ({
 			setFontFamily(value);
 			canvas.getActiveObjects().forEach((object) => {
 				if (isTextType(object.type)) {
-					// @ts-ignore
+					// @ts-expect-error Object literal may only specify known properties, and 'fontFamily' does not exist in type 'Partial<Object>'.ts(2353)
 					object.set({ fontFamily: value });
 				}
 			});
@@ -360,7 +360,7 @@ const buildEditor = ({
 				return fontFamily;
 			}
 
-			// @ts-ignore
+			// @ts-expect-error Argument of type '"fontFamily"' is not assignable to parameter of type 'keyof Object'.ts(2345)
 			// Faulty TS library, fontFamily exists.
 			const value = selectedObject.get("fontFamily") || fontFamily;
 
@@ -369,7 +369,7 @@ const buildEditor = ({
 		changeFontWeight: (value: number) => {
 			canvas.getActiveObjects().forEach((object) => {
 				if (isTextType(object.type)) {
-					// @ts-ignore
+					// @ts-expect-error Argument of type '"fontWeight"' is not assignable to parameter of type 'keyof Object'.ts(2345)
 					// Faulty TS library, fontWeight exists.
 					object.set({ fontWeight: value });
 				}
@@ -383,7 +383,7 @@ const buildEditor = ({
 				return FONT_WEIGHT;
 			}
 
-			// @ts-ignore
+			// @ts-expect-error Argument of type '"fontWeight"' is not assignable to parameter of type 'keyof Object'.ts(2345)
 			// Faulty TS library, fontWeight exists.
 			const value = selectedObject.get("fontWeight") || FONT_WEIGHT;
 
@@ -392,7 +392,7 @@ const buildEditor = ({
 		changeFontSize: (value: number) => {
 			canvas.getActiveObjects().forEach((object) => {
 				if (isTextType(object.type)) {
-					// @ts-ignore
+					//@ts-expect-error Object literal may only specify known properties, and 'fontSize' does not exist in type 'Partial<Object>'.ts(2353)
 					// Faulty TS library, fontSize exists.
 					object.set({ fontSize: value });
 				}
@@ -406,7 +406,7 @@ const buildEditor = ({
 				return FONT_SIZE;
 			}
 
-			// @ts-ignore
+			// @ts-expect-error Argument of type '"fontSize"' is not assignable to parameter of type 'keyof Object'.ts(2345)
 			// Faulty TS library, fontSize exists.
 			const value = selectedObject.get("fontSize") || FONT_SIZE;
 
@@ -416,7 +416,7 @@ const buildEditor = ({
 		changeTextAlign: (value: string) => {
 			canvas.getActiveObjects().forEach((object) => {
 				if (isTextType(object.type)) {
-					// @ts-ignore
+					// @ts-expect-error Object literal may only specify known properties, and 'textAlign' does not exist in type 'Partial<Object>'.ts(2353)
 					// Faulty TS library, textAlign exists.
 					object.set({ textAlign: value });
 				}
@@ -430,7 +430,7 @@ const buildEditor = ({
 				return "left";
 			}
 
-			// @ts-ignore
+			// @ts-expect-error Argument of type '"textAlign"' is not assignable to parameter of type 'keyof Object'.ts(2345)
 			// Faulty TS library, textAlign exists.
 			const value = selectedObject.get("textAlign") || "left";
 
@@ -439,7 +439,7 @@ const buildEditor = ({
 		changeFontUnderline: (value: boolean) => {
 			canvas.getActiveObjects().forEach((object) => {
 				if (isTextType(object.type)) {
-					// @ts-ignore
+					// @ts-expect-error Object literal may only specify known properties, and 'underline' does not exist in type 'Partial<Object>'.ts(2353)
 					// Faulty TS library, underline exists.
 					object.set({ underline: value });
 				}
@@ -453,7 +453,7 @@ const buildEditor = ({
 				return false;
 			}
 
-			// @ts-ignore
+			// @ts-expect-error Argument of type '"underline"' is not assignable to parameter of type 'keyof Object'.ts(2345)
 			// Faulty TS library, underline exists.
 			const value = selectedObject.get("underline") || false;
 
@@ -462,7 +462,7 @@ const buildEditor = ({
 		changeFontLinethrough: (value: boolean) => {
 			canvas.getActiveObjects().forEach((object) => {
 				if (isTextType(object.type)) {
-					// @ts-ignore
+					// @ts-expect-error Object literal may only specify known properties, and 'linethrough' does not exist in type 'Partial<Object>'.ts(2353)
 					// Faulty TS library, linethrough exists.
 					object.set({ linethrough: value });
 				}
@@ -476,7 +476,7 @@ const buildEditor = ({
 				return false;
 			}
 
-			// @ts-ignore
+			//@ts-expect-error Argument of type '"linethrough"' is not assignable to parameter of type 'keyof Object'.ts(2345)
 			// Faulty TS library, linethrough exists.
 			const value = selectedObject.get("linethrough") || false;
 
@@ -485,7 +485,7 @@ const buildEditor = ({
 		changeFontStyle: (value: string) => {
 			canvas.getActiveObjects().forEach((object) => {
 				if (isTextType(object.type)) {
-					// @ts-ignore
+					// @ts-expect-error Object literal may only specify known properties, and 'fontStyle' does not exist in type 'Partial<Object>'.ts(2353)
 					// Faulty TS library, fontStyle exists.
 					object.set({ fontStyle: value });
 				}
@@ -499,7 +499,7 @@ const buildEditor = ({
 				return "normal";
 			}
 
-			// @ts-ignore
+			// @ts-expect-error Argument of type '"fontStyle"' is not assignable to parameter of type 'keyof Object'.ts(2345)
 			// Faulty TS library, fontStyle exists.
 			const value = selectedObject.get("fontStyle") || "normal";
 

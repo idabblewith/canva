@@ -2,7 +2,8 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import type { NextAuthConfig } from "next-auth";
 import { eq } from "drizzle-orm";
-import { JWT } from "next-auth/jwt";
+// import type { JWT } from "next-auth/jwt";
+import "next-auth/jwt";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
@@ -17,12 +18,6 @@ const CredentialsSchema = z.object({
 });
 
 declare module "next-auth/jwt" {
-	interface JWT {
-		id: string | undefined;
-	}
-}
-
-declare module "@auth/core/jwt" {
 	interface JWT {
 		id: string | undefined;
 	}

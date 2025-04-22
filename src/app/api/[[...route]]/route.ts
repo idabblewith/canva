@@ -1,6 +1,6 @@
 // catch all route
 
-import { Hono, Context } from "hono";
+import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { AuthConfig, initAuthConfig } from "@hono/auth-js";
 import authConfig from "@/auth.config";
@@ -14,11 +14,12 @@ import subscriptions from "./subscriptions";
 // Deployable everywhere, revert to edge if only edge
 export const runtime = "nodejs";
 
-function getAuthConfig(c: Context): AuthConfig {
+function getAuthConfig(): AuthConfig {
 	return {
 		// secret: c.env.AUTH_SECRET,
 		// ...authConfig,
 		secret: process.env.AUTH_SECRET,
+		// eslint-disable-next-line
 		...(authConfig as any), // Added due to ts errors with new nextjs auth libs
 	};
 }
@@ -26,7 +27,6 @@ function getAuthConfig(c: Context): AuthConfig {
 const app = new Hono().basePath("/api");
 app.use("*", initAuthConfig(getAuthConfig));
 
-// @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const routes = app
 	.route("/ai", ai)

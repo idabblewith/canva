@@ -36,7 +36,7 @@ export const UserButton = () => {
 		return null;
 	}
 
-	const name = session.data?.user?.name!;
+	const name = session.data?.user?.name || "User";
 	const imageUrl = session.data?.user?.image;
 
 	return (

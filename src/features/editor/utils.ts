@@ -24,14 +24,14 @@ export const createFilter = (value: string) => {
 			effect = new fabric.Image.filters.Grayscale();
 			break;
 		case "polaroid":
-			// @ts-ignore
+			// @ts-expect-error Property 'Polaroid' does not exist on type 'IAllFilters'.ts(2339)
 			effect = new fabric.Image.filters.Polaroid();
 			break;
 		case "sepia":
 			effect = new fabric.Image.filters.Sepia();
 			break;
 		case "kodachrome":
-			// @ts-ignore
+			// @ts-expect-error Property 'Kodachrome' does not exist on type 'IAllFilters'.ts(2339)
 			effect = new fabric.Image.filters.Kodachrome();
 			break;
 		case "contrast":
@@ -41,15 +41,15 @@ export const createFilter = (value: string) => {
 			effect = new fabric.Image.filters.Brightness({ brightness: 0.8 });
 			break;
 		case "brownie":
-			// @ts-ignore
+			// @ts-expect-error Property 'Brownie' does not exist on type 'IAllFilters'.ts(2339)
 			effect = new fabric.Image.filters.Brownie();
 			break;
 		case "vintage":
-			// @ts-ignore
+			// @ts-expect-error Property 'Vintage' does not exist on type 'IAllFilters'.ts(2339)
 			effect = new fabric.Image.filters.Vintage();
 			break;
 		case "technicolor":
-			// @ts-ignore
+			// @ts-expect-error Property 'Technicolor' does not exist on type 'IAllFilters'.ts(2339)
 			effect = new fabric.Image.filters.Technicolor();
 			break;
 		case "pixelate":
@@ -72,18 +72,17 @@ export const createFilter = (value: string) => {
 			});
 			break;
 		case "removecolor":
-			// @ts-ignore
+			// @ts-expect-error Property 'RemoveColor' does not exist on type 'IAllFilters'.ts(2339)
 			effect = new fabric.Image.filters.RemoveColor({
 				threshold: 0.2,
 				distance: 0.5,
 			});
 			break;
 		case "blacknwhite":
-			// @ts-ignore
+			// @ts-expect-error Property 'BlackWhite' does not exist on type 'IAllFilters'.ts(2339)
 			effect = new fabric.Image.filters.BlackWhite();
 			break;
 		case "vibrance":
-			// @ts-ignore
 			effect = new fabric.Image.filters.Vibrance({
 				vibrance: 1,
 			});
@@ -103,7 +102,6 @@ export const createFilter = (value: string) => {
 			effect = new fabric.Image.filters.Resize();
 			break;
 		case "gamma":
-			// @ts-ignore
 			effect = new fabric.Image.filters.Gamma({
 				gamma: [1, 0.5, 2.1],
 			});
@@ -120,13 +118,15 @@ export const createFilter = (value: string) => {
 	return effect;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function transformText(objects: any) {
 	if (!objects) return;
-
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	objects.forEach((item: any) => {
 		if (item.objects) {
 			transformText(item.objects);
 		} else {
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 			item.type === "text" && item.type === "textbox";
 		}
 	});

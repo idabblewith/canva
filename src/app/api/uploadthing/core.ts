@@ -9,7 +9,7 @@ const f = createUploadthing();
 
 export const ourFileRouter = {
 	imageUploader: f({ image: { maxFileSize: "4MB" } })
-		.middleware(async ({ req }) => {
+		.middleware(async () => {
 			// const session = await auth(req);
 			const session = await auth();
 
@@ -17,7 +17,7 @@ export const ourFileRouter = {
 
 			return { userId: session.user?.id };
 		})
-		.onUploadComplete(async ({ metadata, file }) => {
+		.onUploadComplete(async ({ file }) => {
 			return { url: file.url };
 		}),
 } satisfies FileRouter;

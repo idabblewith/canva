@@ -29,7 +29,7 @@ export const RemoveBgSidebar = ({
 
 	const selectedObject = editor?.selectedObjects[0];
 
-	// @ts-ignore
+	// @ts-expect-error Property '_originalElement' does not exist on type
 	const imageSrc = selectedObject?._originalElement?.currentSrc;
 
 	const onClose = () => {
